@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: kuilu-backend
+
+  # R2DBC PostgreSQL Configuration
+  r2dbc:
+    url: ${DATABASE_URL:r2dbc:postgresql://localhost:5432/kuilu_db}
+    username: ${DATABASE_USER:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    pool:
+      initial-size: 10
+      max-size: 20
+      validation-query: SELECT 1
+      max-idle-time: 30m
+      max-acquire-time: 1s
+      max-create-connection-time: 2s
+
+  # WebFlux Configuration
+  webflux:
+    base-path: /api
+    enable-compression: true
+
+  # Security
+  security:
+    user:
+      name: admin
+      password: admin123
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+
+logging:
+  level:
+    root: INFO
+    com.kuilu: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.data: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
