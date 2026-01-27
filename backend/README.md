@@ -2,7 +2,7 @@
 
 Sistema de gestão de filas reativo com Spring Boot WebFlux.
 
-## 🚀 Stack
+##  Stack
 
 - **Java**: 21
 - **Framework**: Spring Boot 3.2.1
@@ -14,7 +14,7 @@ Sistema de gestão de filas reativo com Spring Boot WebFlux.
 - **API Documentation**: OpenAPI/Swagger
 - **Testes**: WebTestClient + JUnit 5
 
-## 📁 Estrutura
+##  Estrutura
 
 ```
 ao.kuilu
@@ -29,7 +29,7 @@ ao.kuilu
 └── service/            # Business logic (FilaService)
 ```
 
-## 🔧 Configuração
+##  Configuração
 
 ### Variáveis de Ambiente
 
@@ -59,7 +59,7 @@ mvn spring-boot:run
 mvn test
 ```
 
-## 🔐 Autenticação JWT
+##  Autenticação JWT
 
 Todos os endpoints (exceto docs) requerem token JWT.
 
@@ -70,7 +70,7 @@ curl -H "Authorization: Bearer seu-token-jwt" \
   http://localhost:8080/api/filas
 ```
 
-## 📚 API Endpoints
+##  API Endpoints
 
 | Método | Endpoint | Permissão | Descrição |
 |--------|----------|-----------|-----------|
@@ -85,17 +85,17 @@ curl -H "Authorization: Bearer seu-token-jwt" \
 - **Swagger UI**: `http://localhost:8080/swagger-ui.html`
 - **OpenAPI JSON**: `http://localhost:8080/v3/api-docs`
 
-## 🧪 Testes
+##  Testes
 
 ```bash
 mvn test
 ```
 
-## 📝 Regras de Negócio
+##  Regras de Negócio
 
-- ✅ Usuário não pode entrar duplicado na mesma fila
-- ✅ Fila inativa não permite entrada
-- ✅ Número sequencial é atômico
-- ✅ Tempo estimado = posição × tempo médio
-- ✅ ADMIN cria filas e chama próximo
-- ✅ CLIENTE entra e visualiza posição
+-  Usuário não pode entrar duplicado na mesma fila
+-  Fila inativa não permite entrada
+-  Número sequencial é atômico
+-  Tempo estimado = posição × tempo médio
+- ADMIN cria filas e chama próximo
+-  CLIENTE entra e visualiza posição
