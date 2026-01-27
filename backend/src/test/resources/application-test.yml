@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: kuilu-test
+
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb?mode=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+
+  h2:
+    console:
+      enabled: true
+
+security:
+  jwt:
+    secret: testSecretKeyThatIsAtLeast256BitsLongForHS256AlgorithmOkayForTesting
+    expiration: 3600000
+
+logging:
+  level:
+    root: WARN
+    ao.kuilu: DEBUG

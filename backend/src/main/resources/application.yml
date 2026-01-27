@@ -1,8 +1,7 @@
 spring:
   application:
-    name: kuilu-backend
+    name: kuilu
 
-  # R2DBC PostgreSQL Configuration
   r2dbc:
     url: ${DATABASE_URL:r2dbc:postgresql://localhost:5432/kuilu_db}
     username: ${DATABASE_USER:postgres}
@@ -10,45 +9,39 @@ spring:
     pool:
       initial-size: 10
       max-size: 20
-      validation-query: SELECT 1
-      max-idle-time: 30m
-      max-acquire-time: 1s
-      max-create-connection-time: 2s
 
-  # WebFlux Configuration
   webflux:
     base-path: /api
-    enable-compression: true
-
-  # Security
-  security:
-    user:
-      name: admin
-      password: admin123
 
 server:
   port: 8080
   servlet:
-    context-path: /
-  compression:
-    enabled: true
-    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+    context-path: /api
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:mySuperSecretKeyThatIsAtLeast256BitsLongForHS256AlgorithmOkay}
+    expiration: ${JWT_EXPIRATION:86400000}
 
 logging:
   level:
     root: INFO
-    com.kuilu: DEBUG
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.data: DEBUG
+    ao.kuilu: DEBUG
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info
   endpoint:
     health:
       show-details: always
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs

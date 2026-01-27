@@ -1,26 +1,35 @@
 # Kuilu Backend
 
-API Reativa com Spring Boot WebFlux
+Sistema de gestão de filas reativo com Spring Boot WebFlux.
 
-## Estrutura
+## 🚀 Stack
+
+- **Java**: 21
+- **Framework**: Spring Boot 3.2.1
+- **Reatividade**: Spring WebFlux
+- **Banco de Dados**: PostgreSQL com R2DBC
+- **Segurança**: JWT (stateless)
+- **Validação**: Jakarta Validation
+- **Lombok**: Redução de boilerplate
+- **API Documentation**: OpenAPI/Swagger
+- **Testes**: WebTestClient + JUnit 5
+
+## 📁 Estrutura
 
 ```
-src/
-├── main/
-│   ├── java/com/kuilu/
-│   │   ├── config/         # Configurações da aplicação
-│   │   ├── controller/     # Controllers REST
-│   │   ├── service/        # Lógica de negócio
-│   │   ├── repository/     # Acesso a dados (R2DBC)
-│   │   ├── model/          # Entidades e enums
-│   │   └── KuiluBackendApplication.java
-│   └── resources/
-│       └── application.yml # Configurações
-└── test/
-    └── java/com/kuilu/     # Testes automatizados
+ao.kuilu
+├── config/              # Configurações (Security, OpenAPI, etc)
+├── controller/          # API REST endpoints
+├── domain/
+│   ├── model/          # Entidades (Fila, Usuario, EntradaFila)
+│   └── enums/          # Enums (Role)
+├── dto/                # Data Transfer Objects
+├── repository/         # Data access layer (R2DBC)
+├── security/           # JWT handling (JwtProvider, JwtTokenConverter, etc)
+└── service/            # Business logic (FilaService)
 ```
 
-## Configuração
+## 🔧 Configuração
 
 ### Variáveis de Ambiente
 
@@ -28,32 +37,65 @@ src/
 DATABASE_URL=r2dbc:postgresql://localhost:5432/kuilu_db
 DATABASE_USER=postgres
 DATABASE_PASSWORD=postgres
+JWT_SECRET=mySuperSecretKeyThatIsAtLeast256BitsLongForHS256AlgorithmOkay
+JWT_EXPIRATION=86400000  # 24 horas em ms
 ```
 
-### Build e Execução
+### Build
 
 ```bash
-# Build
 mvn clean package
+```
 
-# Executar
+### Executar
+
+```bash
 mvn spring-boot:run
+```
 
-# Testes
+### Testes
+
+```bash
 mvn test
 ```
 
-## API
+## 🔐 Autenticação JWT
 
-- Base URL: `http://localhost:8080/api`
-- Health Check: `http://localhost:8080/actuator/health`
+Todos os endpoints (exceto docs) requerem token JWT.
 
-## Dependências
+### Usar Token
 
-- Spring Boot 3.2.1
-- Java 17
-- Spring WebFlux
-- Spring Data R2DBC
-- PostgreSQL
-- Spring Security
-- Lombok
+```bash
+curl -H "Authorization: Bearer seu-token-jwt" \
+  http://localhost:8080/api/filas
+```
+
+## 📚 API Endpoints
+
+| Método | Endpoint | Permissão | Descrição |
+|--------|----------|-----------|-----------|
+| POST | `/filas` | ADMIN | Criar fila |
+| GET | `/filas/{id}` | Público | Obter detalhes |
+| POST | `/filas/{id}/entrar` | CLIENTE | Entrar na fila |
+| POST | `/filas/{id}/chamar-proximo` | ADMIN | Chamar próximo |
+| GET | `/filas/{id}/posicao/{usuarioId}` | CLIENTE | Obter posição |
+
+### Documentação Interativa
+
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI JSON**: `http://localhost:8080/v3/api-docs`
+
+## 🧪 Testes
+
+```bash
+mvn test
+```
+
+## 📝 Regras de Negócio
+
+- ✅ Usuário não pode entrar duplicado na mesma fila
+- ✅ Fila inativa não permite entrada
+- ✅ Número sequencial é atômico
+- ✅ Tempo estimado = posição × tempo médio
+- ✅ ADMIN cria filas e chama próximo
+- ✅ CLIENTE entra e visualiza posição
