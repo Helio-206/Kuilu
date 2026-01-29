@@ -18,9 +18,8 @@ async function request<T>(
   const { token, ...fetchOptions } = options
   const url = `${API_URL}${endpoint}`
 
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...fetchOptions.headers,
   }
 
   if (token) {

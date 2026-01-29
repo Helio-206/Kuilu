@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -78,19 +79,22 @@ public class FilaController {
     @PostMapping("/{id}/entrar")
     @PreAuthorize("hasRole('CLIENTE')")
     @Operation(summary = "Entrar na fila", description = "Cliente entra na fila")
-    public Mono<ResponseEntity<?>> entrarNaFila(
+    public Mono<ResponseEntity<Object>> entrarNaFila(
             @PathVariable UUID id,
             @RequestParam UUID usuarioId) {
 
         log.info("Usuário {} entrando na fila {}", usuarioId, id);
 
         return filaService.entrarNaFila(id, usuarioId)
-                .map(entrada -> ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                        "mensagem", "Você entrou na fila",
-                        "numero", entrada.getNumeroSequencia(),
-                        "filaId", entrada.getFilaId()
-                )))
-                .onErrorReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                .map(entrada -> {
+                    var response = Map.of(
+                            "mensagem", (Object) "Você entrou na fila",
+                            "numero", entrada.getNumeroSequencia(),
+                            "filaId", entrada.getFilaId()
+                    );
+                    return ResponseEntity.status(HttpStatus.CREATED).body((Object) response);
+                })
+                .onErrorReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST).body((Object) Map.of(
                         "erro", "Erro ao entrar na fila"
                 )));
     }
@@ -102,16 +106,19 @@ public class FilaController {
     @PostMapping("/{id}/chamar-proximo")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Chamar próximo", description = "Administrador chama próximo da fila")
-    public Mono<ResponseEntity<?>> chamarProximo(@PathVariable UUID id) {
+    public Mono<ResponseEntity<Object>> chamarProximo(@PathVariable UUID id) {
         log.info("Chamando próximo da fila {}", id);
 
         return filaService.chamarProximo(id)
-                .map(entrada -> ResponseEntity.ok(Map.of(
-                        "mensagem", "Próximo chamado",
-                        "usuarioId", entrada.getUsuarioId(),
-                        "numero", entrada.getNumeroSequencia()
-                )))
-                .onErrorReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                .map(entrada -> {
+                    var response = Map.of(
+                            "mensagem", (Object) "Próximo chamado",
+                            "usuarioId", entrada.getUsuarioId(),
+                            "numero", entrada.getNumeroSequencia()
+                    );
+                    return ResponseEntity.ok((Object) response);
+                })
+                .onErrorReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).body((Object) Map.of(
                         "erro", "Nenhum usuário na fila"
                 )));
     }
@@ -134,5 +141,3 @@ public class FilaController {
                 .onErrorReturn(ResponseEntity.notFound().build());
     }
 }
-
-import java.util.Map;

@@ -1,7 +1,7 @@
 package ao.kuilu.repository;
 
 import ao.kuilu.domain.model.Fila;
-import org.springframework.data.r2dbc.repository.ReactiveCrudRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;

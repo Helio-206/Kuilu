@@ -97,7 +97,7 @@ public class FilaService {
      */
     public Mono<EntradaFila> chamarProximo(UUID filaId) {
         return entradaFilaRepository.findActiveByFilaId(filaId)
-                .take(1)
+                .next()
                 .flatMap(entrada -> {
                     entrada.setSaiuEm(LocalDateTime.now());
                     return entradaFilaRepository.save(entrada)
@@ -120,8 +120,8 @@ public class FilaService {
                                         .map(fila -> PosicaoFilaResponse.builder()
                                                 .usuarioId(usuarioId)
                                                 .filaId(filaId)
-                                                .posicao((int) posicao + 1)
-                                                .tempoEstimadoMinutos((int) (posicao + 1) * fila.getTempoMedioAtendimento())
+                                                .posicao(posicao.intValue() + 1)
+                                                .tempoEstimadoMinutos((int) ((posicao + 1) * fila.getTempoMedioAtendimento()))
                                                 .ativo(true)
                                                 .build()
                                         )
